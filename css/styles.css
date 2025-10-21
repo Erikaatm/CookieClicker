@@ -1,0 +1,92 @@
+/* Errores */
+
+input:focus:invalid {
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
+
+input:valid {
+    border: 2px solid #00b894;
+    /* verde cuando está correcto */
+    background-color: #eaffea;
+}
+
+input.error {
+    border: 2px solid red !important;
+    background-color: #ffe6e6 !important;
+}
+
+#adult-data,
+#menor-data {
+    display: none;
+}
+
+
+/* Selecciones de las cookies */
+
+
+/* Ocultamos el radio button */
+
+#cookie-options input[type="radio"] {
+    display: none;
+}
+
+
+/* Contenedor general */
+
+#cookie-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+
+/* Cada opción */
+
+#cookie-options label {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+
+/* Efecto al pasar el ratón */
+
+#cookie-options label:hover {
+    transform: scale(1.1);
+}
+
+
+/* Imagen base */
+
+.cookie-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    image-rendering: pixelated;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+
+/* Imagen seleccionada */
+
+#cookie-options input[type="radio"]:checked+.cookie-preview {
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+
+/* Animacion */
+
+#main-cookie {
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    image-rendering: pixelated;
+}
+
+#main-cookie:active {
+    transform: scale(0.9);
+}

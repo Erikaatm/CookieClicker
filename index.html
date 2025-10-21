@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie clicker</title>
+    <script src="js/"></script>
+    <script src="../jquery.cookie.js"></script>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Formulario del Login -->
+    <div id="login-container">
+        <p>Inicio de sesión</p>
+        <form action="" id="login-form">
+
+            <!-- Email -->
+            <label for="emailLogin"></label>
+            <input type="text" id="emailLogin" name="emailLogin" placeholder="Email..." required>
+
+
+            <!-- Contraseña -->
+            <label for="passwordLogin"></label>
+            <input type="text" id="passwordLogin" name="passwordLogin" placeholder="Contraseña..." required>
+
+            <button type="submit">Iniciar sesión</button>
+            <a href="#" id="show-register">¿No tienes cuenta? Regístrate</a>
+        </form>
+    </div>
+
+    <!-- Formulario del registro -->
+    <div id="register-container" hidden>
+        <p>Registro</p>
+        <form action="" id="register-form">
+            <!-- Nombre de usuario -->
+            <label for="username"></label>
+            <input type="text" id="username" name="username" placeholder="Usuario..." required>
+
+            <!-- Checkbox mayor/menor edad -->
+            <div class="checkbox-container">
+                <input type="checkbox" id="isAdult" name="isAdult">
+                <label for="isAdult" id="checkText">Soy mayor de edad</label>
+            </div>
+
+            <!-- Datos de mayor de edad -->
+            <div id="adult-data">
+                <!-- Email -->
+                <label for="email"></label>
+                <input type="text" id="email" name="email" placeholder="Email..." required>
+
+                <!-- Telefono -->
+                <label for="phone"></label>
+                <input type="text" id="phone" name="phone" placeholder="Teléfono..." required min="9" max="9">
+
+            </div>
+
+            <!-- Datos de menor de edad -->
+            <div id="menor-data">
+                <!-- Email -->
+                <label for="emailPadres"></label>
+                <input type="text" id="emailPadres" name="emailPadres" placeholder="Email del padre/madre/tutor..." required>
+
+                <!-- Telefono -->
+                <label for="phonePadres"></label>
+                <input type="text" id="phonePadres" name="phonePadres" placeholder="Teléfono del padre/madre/tutor..." required min="9" max="9">
+
+            </div>
+
+            <!-- Contraseña -->
+            <label for="password"></label>
+            <input type="text" id="password" name="password" placeholder="Contraseña..." required>
+
+            <!-- Para elegir el tipo de galleta -->
+            <div id="cookie-selection">
+                <h3>Elige el tipo de galleta que quieres</h3>
+                <div id="cookie-options">
+                    <label>
+                        <input type="radio" name="cookieType" value="Cookie Chips">
+                        <img src="assets/cookieChips.png" alt="Cookie Chips" class="cookie-preview">
+                    </label>
+
+                    <label>
+                        <input type="radio" name="cookieType" value="Cookie Cat">
+                        <img src="assets/cookieCat.png" alt="Cookie Cat" class="cookie-preview">
+                    </label>
+
+                    <label>
+                        <input type="radio" name="cookieType" value="Tarta Mine">
+                        <img src="assets/tartaMine.png" alt="Tarta Mine" class="cookie-preview">
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" id="btnRegister">Resgistrarse</button>
+            <a href="#" id="show-login">¿Ya tienes cuenta? Inicia sesión</a>
+        </form>
+    </div>
+
+    <!-- Game container -->
+    <div id="game-container" hidden>
+
+        <!-- Header del juego -->
+        <header id="game-header">
+            <h1 id="game-title">Cookie Clicker</h1>
+
+            <div id="user-info">
+                <span id="user-name"></span>
+                <button id="logout-btn">Cerrar sesión</button>
+            </div>
+        </header>
+
+        <!-- SECCIÓN DE INFORMACIÓN -->
+        <section id="stats-section">
+            <div class="stat">
+                <h3>Cookies</h3>
+                <p id="cookie-count">0</p>
+            </div>
+            <div class="stat">
+                <h3>Cookies por segundo</h3>
+                <p id="cps">0</p>
+            </div>
+        </section>
+
+        <!-- ÁREA PRINCIPAL DEL CLICK -->
+        <main id="clicker-area">
+            <img id="main-cookie" src="assets/cookieChips.png" alt="cookie" />
+            <p>Haz clic para conseguir cookies</p>
+        </main>
+
+        <!-- SECCIÓN DE UPGRADES -->
+        <section id="upgrades-section">
+            <h2>Mejoras</h2>
+            <div id="upgrade-list">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Desarrollado por <strong>Eri</strong> © 2025</p>
+        </footer>
+
+    </div>
+
+
+
+
+
+</body>
+
+</html>
