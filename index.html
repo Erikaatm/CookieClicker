@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookie clicker</title>
-    <script src="js/"></script>
+    <script src="js/jquery.js"></script>
     <script src="../jquery.cookie.js"></script>
     <script src="js/script.js"></script>
     <link rel="stylesheet" href="css/styles.css">
@@ -102,44 +102,52 @@
     <!-- Game container -->
     <div id="game-container" hidden>
 
-        <!-- Panel izquierdo -->
-        <aside class="sidebar-left">
-            <section id="stats-section">
-                <div class="stat">
-                    <h3>Cookies</h3>
-                    <p id="cookie-count">0</p>
-                </div>
-                <div class="stat">
-                    <h3>Cookies por segundo</h3>
-                    <p id="cps">0</p>
-                </div>
-            </section>
+        <!-- Header del juego -->
+        <header id="game-header">
+            <h1 id="game-title">Cookie Clicker</h1>
 
-            <section id="upgrades-section">
-                <h2>Mejoras</h2>
-                <div id="upgrade-list"></div>
-            </section>
-        </aside>
-
-        <!-- Panel central -->
-        <main class="main-clicker">
-            <img id="main-cookie" src="assets/cookieChips.png" alt="cookie" />
-            <p>Haz clic para conseguir cookies</p>
-        </main>
-
-        <!-- Panel derecho -->
-        <aside class="sidebar-right">
             <div id="user-info">
                 <span id="user-name"></span>
                 <button id="logout-btn">Cerrar sesión</button>
             </div>
+        </header>
 
-            <div id="extra-info">
-                <h3>Logros</h3>
-                <ul id="achievements"></ul>
+        <!-- SECCIÓN DE INFORMACIÓN -->
+        <section id="stats-section">
+            <div class="stat">
+                <h3>Cookies</h3>
+                <p id="cookie-count">0</p>
             </div>
-        </aside>
+            <div class="stat">
+                <h3>Cookies por segundo</h3>
+                <p id="cps">0</p>
+            </div>
+        </section>
+
+        <!-- ÁREA PRINCIPAL DEL CLICK -->
+        <main id="clicker-area">
+            <img id="main-cookie" src="assets/cookieChips.png" alt="cookie" />
+            <p>Haz clic para conseguir cookies</p>
+        </main>
+
+        <!-- SECCIÓN DE UPGRADES -->
+        <section id="upgrades-section">
+            <h2>Mejoras</h2>
+            <div id="upgrade-list">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Desarrollado por <strong>Eri</strong> © 2025</p>
+        </footer>
+
     </div>
+
+
+
+
 
 </body>
 
