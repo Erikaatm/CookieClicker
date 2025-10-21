@@ -102,52 +102,44 @@
     <!-- Game container -->
     <div id="game-container" hidden>
 
-        <!-- Header del juego -->
-        <header id="game-header">
-            <h1 id="game-title">Cookie Clicker</h1>
+        <!-- Panel izquierdo -->
+        <aside class="sidebar-left">
+            <section id="stats-section">
+                <div class="stat">
+                    <h3>Cookies</h3>
+                    <p id="cookie-count">0</p>
+                </div>
+                <div class="stat">
+                    <h3>Cookies por segundo</h3>
+                    <p id="cps">0</p>
+                </div>
+            </section>
 
-            <div id="user-info">
-                <span id="user-name"></span>
-                <button id="logout-btn">Cerrar sesión</button>
-            </div>
-        </header>
+            <section id="upgrades-section">
+                <h2>Mejoras</h2>
+                <div id="upgrade-list"></div>
+            </section>
+        </aside>
 
-        <!-- SECCIÓN DE INFORMACIÓN -->
-        <section id="stats-section">
-            <div class="stat">
-                <h3>Cookies</h3>
-                <p id="cookie-count">0</p>
-            </div>
-            <div class="stat">
-                <h3>Cookies por segundo</h3>
-                <p id="cps">0</p>
-            </div>
-        </section>
-
-        <!-- ÁREA PRINCIPAL DEL CLICK -->
-        <main id="clicker-area">
+        <!-- Panel central -->
+        <main class="main-clicker">
             <img id="main-cookie" src="assets/cookieChips.png" alt="cookie" />
             <p>Haz clic para conseguir cookies</p>
         </main>
 
-        <!-- SECCIÓN DE UPGRADES -->
-        <section id="upgrades-section">
-            <h2>Mejoras</h2>
-            <div id="upgrade-list">
-                <!-- Se llenará dinámicamente -->
+        <!-- Panel derecho -->
+        <aside class="sidebar-right">
+            <div id="user-info">
+                <span id="user-name"></span>
+                <button id="logout-btn">Cerrar sesión</button>
             </div>
-        </section>
 
-        <!-- FOOTER -->
-        <footer>
-            <p>Desarrollado por <strong>Eri</strong> © 2025</p>
-        </footer>
-
+            <div id="extra-info">
+                <h3>Logros</h3>
+                <ul id="achievements"></ul>
+            </div>
+        </aside>
     </div>
-
-
-
-
 
 </body>
 
