@@ -80,9 +80,6 @@ $(document).ready(function() {
         e.preventDefault();
         $("input").removeClass("error");
 
-        // Cargamos los usuarios existentes en nuestro localstorage
-        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || []; // Si no hay nada creamos un array vacio
-
         // Recogemos los datos del formulario
         const isAdult = $("#isAdult").is(":checked");
         const username = $("#username").val().trim();
@@ -96,42 +93,6 @@ $(document).ready(function() {
             return;
         }
         // No hacemos validaciones pq lo hemos puesto requerido
-
-        let hayDuplicado = false;
-
-        // Comprobamos si existe el usuario 
-        const duplicadoUsername = usuarios.find(u => u.username === username);
-        const duplicadoEmail = usuarios.find(u => u.email === email);
-        const duplicadoPhone = usuarios.find(u => u.phone === phone);
-
-        if (duplicadoUsername) {
-            $("#username").addClass("error");
-            hayDuplicado = true;
-        }
-
-        if (duplicadoEmail) {
-            if (isAdult) {
-                $("#email").addClass("error");
-            } else {
-                $("#emailPadres").addClass("error");
-            }
-            hayDuplicado = true;
-        }
-
-        if (duplicadoPhone) {
-            if (isAdult) {
-                $("#phone").addClass("error");
-            } else {
-                $("#phonePadres").addClass("error");
-            }
-            hayDuplicado = true;
-        }
-
-        // Si esta duplicado
-        if (hayDuplicado) {
-            alert("Ya existe un usuario con esos datos. Corrige los campos marcados.");
-            return;
-        }
 
         // Creamos el nuevo usuario
         const nuevoUsuario = {
@@ -147,16 +108,38 @@ $(document).ready(function() {
             upgrades: []
         };
 
-        usuarios.push(nuevoUsuario);
-        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+        $.ajax({
+            url: 'backend/api.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(nuevoUsuario),
+            success: function(respuesta) {
+                if (respuesta.error) {
+                    // Si el backend detecta duplicados, mostramos los campos en error
+                    if (respuesta.errorFields) {
+                        respuesta.errorFields.forEach(f => {
+                            $(`#${f}`).addClass("error");
+                        });
+                    }
+                    alert(respuesta.mensaje); // "Ya existe un usuario con esos datos"
+                    return;
+                }
 
-        // Limpiar el formulario después del registro
-        this.reset();
-        $("input").removeClass("error");
-        alert("Usuario registrado correctamente ✅");
+                // Limpiar el formulario después del registro
+                this.reset();
+                $("input").removeClass("error");
+                alert("Usuario registrado correctamente ✅");
 
-        // Volvemos al login
-        window.location.href = 'login.html';
+                // Volvemos al login
+                window.location.href = 'login.html';
+                alert(respuesta.mensaje); // "Usuario añadido correctamente"
+                $('#register-form')[0].reset(); // Limpiamos formulario
+                window.location.href = 'login.html';
+            },
+            error: function() {
+                alert("Error al registrar el usuario ❌");
+            }
+        });
     });
 
 
