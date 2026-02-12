@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@tsparticles/jquery": "^3.0.0"
+  }
+}

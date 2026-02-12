@@ -1,28 +1,148 @@
-/* Errores */
+/* Colores */
 
-input:focus:invalid {
-    border: 2px solid red;
-    background-color: #ffe6e6;
+:root {
+    --color-primary: #ffffff;
+    --color-accent: #ffcc00;
+    --color-bg: rgba(20, 20, 60, 0.85);
+    --color-border: rgba(255, 255, 255, 0.15);
+    --color-hover: #ffaa00;
+    --shadow-main: 0 0 25px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 15px rgba(255, 204, 0, 0.5);
 }
 
-input:valid {
-    border: 2px solid #00b894;
-    /* verde cuando está correcto */
-    background-color: #eaffea;
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url(/assets/cookiesClickerFonfo.jpg);
+    background-size: cover;
+    background-position: center;
+    color: #333;
 }
 
-input.error {
-    border: 2px solid red !important;
-    background-color: #ffe6e6 !important;
+
+/* Contenedor */
+
+#login-container,
+#register-container {
+    background: var(--color-bg);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-main);
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    border: 1px solid var(--color-border);
 }
+
+
+/* Títulos */
+
+#login-container p,
+#register-container p {
+    font-size: 1.9em;
+    margin-bottom: 25px;
+    color: var(--color-accent);
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+
+/* Formularios */
+
+#login-form,
+#register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    color: #000000;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+button {
+    background: var(--color-accent);
+    color: #222;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+    box-shadow: var(--shadow-glow);
+    background: var(--color-hover);
+}
+
+
+/* Links */
+
+a {
+    color: var(--color-accent);
+    font-size: 0.9em;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--color-hover);
+}
+
+
+/* Checkbox */
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 5px 0;
+}
+
+.checkbox-container label {
+    font-size: 1em;
+    color: #ddd;
+}
+
+
+/* Campos de edad */
 
 #adult-data,
 #menor-data {
     display: none;
+    flex-direction: column;
+    gap: 12px;
 }
 
 
 /* Selecciones de las cookies */
+
+#cookie-selection h3 {
+    margin: 15px 0 10px;
+    font-size: 1.1em;
+    color: var(--color-accent);
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+}
 
 
 /* Ocultamos el radio button */
@@ -89,4 +209,275 @@ input.error {
 
 #main-cookie:active {
     transform: scale(0.9);
+}
+
+
+/* Upgrades */
+
+.upgrade-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.imgUpgrade {
+    cursor: pointer;
+    width: 200px;
+    height: 200px;
+}
+
+
+/* Errores */
+
+input:focus:invalid {
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
+
+input:valid {
+    border: 2px solid #00b894;
+    /* verde cuando está correcto */
+    background-color: #eaffea;
+}
+
+input.error {
+    border: 2px solid red !important;
+    background-color: #ffe6e6 !important;
+}
+
+
+/* Index.html */
+
+
+/* Contenedor principal 70/30 */
+
+#game-container {
+    display: flex;
+    height: 100vh;
+    width: 70%;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Zona principal del juego (70%) */
+
+#main-game-content {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background-color: #624a3b;
+}
+
+
+/* Header */
+
+#game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#game-title {
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #ddd;
+}
+
+#logout-btn {
+    padding: 8px 12px;
+    background-color: #ff0202;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 1;
+}
+
+#logout-btn:hover {
+    background-color: #b40707;
+}
+
+
+/* Stats */
+
+#stats-section {
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stat h3 {
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+
+/* Clicker */
+
+#clicker-area {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#tsparticles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#main-cookie,
+#clicker-area p {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+
+/* Contenedor del juego encima */
+
+#main-cookie {
+    width: 250px;
+    height: 250px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    image-rendering: pixelated;
+}
+
+#main-cookie:active {
+    transform: scale(0.9);
+}
+
+#clicker-area p {
+    font-size: 1.1rem;
+    color: black;
+}
+
+
+/* Footer */
+
+footer {
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    color: black;
+}
+
+
+/* Upgrades (30%) */
+
+#upgrades-section {
+    flex: 3;
+    padding: 20px;
+    background-color: #efe2b5;
+    border-left: 3px solid #d4a373;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1;
+}
+
+#upgrades-section h2 {
+    margin-bottom: 15px;
+    color: #b86b3b;
+}
+
+#upgrade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.upgrade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.upgrade-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.upgrade-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.upgrade-item img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+#user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #fff;
+}
+
+#user-name {
+    font-weight: bold;
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Css para la animacion del click */
+
+#click-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.floating-cookie {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
 }

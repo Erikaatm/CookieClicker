@@ -1,10 +1,83 @@
+// login.html
 $(document).ready(function() {
+    // Lógica del login
+    $('#login-form').on('submit', function(e) {
+        e.preventDefault();
+        // Limpiamos
+        $("input").removeClass("error");
+
+        // Cogemos los datos del login
+        const emailLogin = $('#emailLogin').val();
+        const passwordLogin = $('#passwordLogin').val();
+
+        // recuperamos lols usuarios
+        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+        // Buscamos el usuario en nuestro array
+        const usuarioEncontrado = usuarios.find(u => u.email === emailLogin && u.password === passwordLogin);
+
+        // Comprobamos si está
+        if (!usuarioEncontrado) {
+            // Si la contraseña o el email son incorrectos ponemos la clase de error
+            $('#emailLogin, #passwordLogin').addClass('error');
+            alert("Usuario o contraseña incorrectos ❌");
+            return;
+        }
+
+        // Guardamos la sesión que está activa 
+        localStorage.setItem('currentUser', JSON.stringify(usuarioEncontrado));
+
+        alert(`Bienvenido ${usuarioEncontrado.username} 🍪`);
+        window.location.href = 'index.html';
+
+    });
+
+});
+
+// Funciones
+// Funcion para coger la imagen del registro
+function getCookieImage(type) {
+    switch (type) {
+        case "Cookie Chips":
+            return "assets/cookieChips.png";
+        case "Cookie Cat":
+            return "assets/cookieCat.png";
+        case "Tarta Mine":
+            return "assets/tartaMine.png";
+        default:
+            return "assets/cookieChips.png";
+    }
+}
+
+// Funcion para guardar el progreso del juego
+function saveProgress(user) {
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const index = usuarios.findIndex(u => u.email === user.email);
+
+    if (index !== -1) {
+        usuarios[index] = user;
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+}
+
+// Funcion para cargar los upgrades que tenemos
+function renderUpgrades(game, upgrades) {
+    $("#upgrade-list").html(""); // Limpiamos la lista
+    upgrades.forEach(upg => {
+        $("#upgrade-list").append(upg.mostrarUpgrades(game)); // Añadimos cada upgrade
+    });
+}
+
+//Register.html
+$(document).ready(function() {
+
     $("#menor-data").show();
 
     // Logica del registro
     $('#register-form').on('submit', function(e) {
         e.preventDefault();
-
         $("input").removeClass("error");
 
         // Cargamos los usuarios existentes en nuestro localstorage
@@ -70,6 +143,7 @@ $(document).ready(function() {
             cookieType,
             cookies: 0,
             cookiesPerSecond: 0,
+            cookiesPerClick: 1,
             upgrades: []
         };
 
@@ -82,8 +156,7 @@ $(document).ready(function() {
         alert("Usuario registrado correctamente ✅");
 
         // Volvemos al login
-        $('#register-container').hide();
-        $('#login-container').fadeIn();
+        window.location.href = 'login.html';
     });
 
 
@@ -108,108 +181,114 @@ $(document).ready(function() {
         }
     });
 
-
-    // Si le damos click al enlace se cambia de contenedor
-    $('#show-register').on('click', function(e) {
-        e.preventDefault();
-        $('#login-container').hide();
-        $('#register-container').fadeIn();
-    });
-
-    $('#show-login').on('click', function(e) {
-        e.preventDefault();
-        $('#register-container').hide();
-        $('#login-container').fadeIn();
-    });
-
-
-    // Lógica del login
-    $('#login-form').on('submit', function(e) {
-        e.preventDefault();
-        // Limpiamos
-        $("input").removeClass("error");
-
-        // Cogemos los datos del login
-        const emailLogin = $('#emailLogin').val();
-        const passwordLogin = $('#passwordLogin').val();
-
-        // recuperamos lols usuarios
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-        // Buscamos el usuario en nuestro array
-        const usuarioEncontrado = usuarios.find(u => u.email === emailLogin && u.password === passwordLogin);
-
-        // Comprobamos si está
-        if (!usuarioEncontrado) {
-            // Si la contraseña o el email son incorrectos ponemos la clase de error
-            $('#emailLogin, #passwordLogin').addClass('error');
-            alert("Usuario o contraseña incorrectos ❌");
-            return;
-        }
-
-        // Guardamos la sesión que está activa 
-        localStorage.setItem('currentUser', JSON.stringify(usuarioEncontrado));
-
-        alert(`Bienvenido ${usuarioEncontrado.username} 🍪`);
-        $("#login-container").hide();
-        $("#game-container").fadeIn();
-
-        // Mostramos la galleta que elegimos
-        $('#main-cookie').attr("src", getCookieImage(usuarioEncontrado.cookieType));
-
-
-        // Lógica del cookieClicker
-        // Inicializamos el juego al iniciar sesión
-        let currentUser = usuarioEncontrado;
-        let cookieCount = currentUser.cookies || 0;
-        let CPC = 1;
-
-        // Mostramos las cookies actuales
-        $("#cookie-count").text(cookieCount);
-
-        // AL hacer click en la galleta principal sumamos 1 a las cookies totales
-        $("#main-cookie").on('click', function(e) {
-            cookieCount += CPC;
-            $("#cookie-count").text(cookieCount);
-
-            // Y hacemos un pequeño efecto visual
-            $(this).css("transform", "scale(0.95)");
-            setTimeout(() => $(this).css("transform", "scale(1)"), 100);
-
-            // Guardamos en el localstorage
-            currentUser.cookies = cookieCount;
-            saveProgress(currentUser);
-        });
-    });
-
-
-
 });
 
-// Funciones
-// Funcion para coger la imagen del registro
-function getCookieImage(type) {
-    switch (type) {
-        case "Cookie Chips":
-            return "assets/cookieChips.png";
-        case "Cookie Cat":
-            return "assets/cookieCat.png";
-        case "Tarta Mine":
-            return "assets/tartaMine.png";
-        default:
-            return "assets/cookieChips.png";
-    }
-}
 
-// Funcion para guardar el progreso del juego
-function saveProgress(user) {
-    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const index = usuarios.findIndex(u => u.email === user.email);
+// index.html
+$(document).ready(function() {
+    const usuarioEncontrado = JSON.parse(localStorage.getItem('currentUser'));
+    if (!usuarioEncontrado) {
 
-    if (index !== -1) {
-        usuarios[index] = user;
-        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+        return;
     }
 
-    localStorage.setItem("currentUser", JSON.stringify(user));
-}
+    $('#user-name').text(usuarioEncontrado.username);
+    // Mostramos la galleta que elegimos
+    $('#main-cookie').attr("src", getCookieImage(usuarioEncontrado.cookieType));
+
+    // Iniciamos el juego
+    const game = new Game(usuarioEncontrado);
+    game.start();
+
+    // Logica de los upgrades
+    // Lista de algunos de ellos
+    const upgrades = [
+        new Upgrade("Cursor", 10, 20, "assets/pointer1.jpg"),
+        new Upgrade("Abuela", 0, 20, "assets/abuela.png", 1)
+
+    ];
+
+    // Hover dinámico para upgrades
+    $("#upgrade-list").on("mouseenter", ".upgrade-item", function() {
+        const name = $(this).data("name");
+        const upgrade = upgrades.find(u => u.name === name);
+        if (!upgrade) return;
+
+        // Detectamos qué aumenta
+        let message = "";
+        if (upgrade.cpsIncrease && upgrade.cpsIncrease > 0) {
+            message = `Añade +${upgrade.cpsIncrease} CPS 🍪`;
+        } else if (upgrade.cpcIncrease && upgrade.cpcIncrease > 0) {
+            message = `Añade +${upgrade.cpcIncrease} CPC 🍪`;
+        } else {
+            message = `Mejora disponible 🍪`;
+        }
+
+        // Creamos tooltip
+        if (!$(this).find(".tooltip").length) {
+            $(this).append(`<span class="tooltip" style="
+            position: absolute; 
+            background: #333; 
+            color: #fff; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            top: -25px; 
+            left: 0;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        ">${message}</span>`);
+        }
+    });
+
+    // Quitamos el tooltip al salir
+    $("#upgrade-list").on("mouseleave", ".upgrade-item", function() {
+        $(this).find(".tooltip").remove();
+    });
+
+
+    // Quitamos el tooltip al salir
+    $("#upgrade-list").on("mouseleave", ".upgrade-item", function() {
+        $(this).find(".tooltip").remove();
+    });
+
+    // Cargamos el precio nuevo al iniciar el login
+    const savedUpgrades = usuarioEncontrado.upgrades || [];
+
+    // Recooremos el array de los upgrades que tenemos comprados
+    for (const savedUpg of savedUpgrades) {
+        // Busca el objeto de mejora correspondiente en la lista base del juego.
+        const baseUpg = upgrades.find(u => u.name === savedUpg.name);
+
+        // Si la mejora base existe, aplica los valores guardados.
+        if (baseUpg) {
+            baseUpg.price = savedUpg.price; // Actualiza el precio
+            baseUpg.quantity = savedUpg.quantity; // Actualiza la cantidad
+        }
+    }
+
+    // guarda referencias globales para fácil acceso
+    window.game = game;
+    window.upgrades = upgrades;
+
+    // render inicial
+    renderUpgrades(game, upgrades);
+
+    // Cuando hacemos click en un upgrade
+    $("#upgrade-list").on('click', '.upgrade-item', function() {
+        const name = $(this).data('name'); // Cogemos el nombre de la mejora clicada
+        const upgrade = upgrades.find(u => u.name === name); // Buscamos la instancia
+        if (upgrade.buyUpgrades(game)) { // Intentamos comprarla
+            renderUpgrades(game, upgrades); // Actualizamos la UI
+        }
+    });
+
+    $('#user-name').text(usuarioEncontrado.username);
+
+    // Boton de log out
+    $('#logout-btn').on('click', function() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+    });
+
+});
