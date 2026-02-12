@@ -7,7 +7,7 @@
     <title>Cookie clicker</title>
     <script src="js/jquery.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
 
@@ -15,6 +15,10 @@
     <script src="js/game.js"></script>
     <script src="js/upgrade.js"></script>
     <script src="js/script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -44,6 +48,14 @@
                         <p id="cps" style="color: #ddd;">0</p>
                         <h3>Cookies por click</h3>
                         <p id="cpc" style="color: #ddd;">0</p>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button id="generar-pdf" class="btn-reporte">Descargar Informe PDF</button>
+                    </div>
+
+                    <div style="position: absolute; left: -9999px;">
+                        <canvas id="grafico-stats" width="400" height="200"></canvas>
                     </div>
                 </section>
             </main>

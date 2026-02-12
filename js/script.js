@@ -80,6 +80,9 @@ $(document).ready(function() {
         e.preventDefault();
         $("input").removeClass("error");
 
+        // Cargamos los usuarios existentes en nuestro localstorage
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || []; // Si no hay nada creamos un array vacio
+
         // Recogemos los datos del formulario
         const isAdult = $("#isAdult").is(":checked");
         const username = $("#username").val().trim();
@@ -93,6 +96,42 @@ $(document).ready(function() {
             return;
         }
         // No hacemos validaciones pq lo hemos puesto requerido
+
+        let hayDuplicado = false;
+
+        // Comprobamos si existe el usuario 
+        const duplicadoUsername = usuarios.find(u => u.username === username);
+        const duplicadoEmail = usuarios.find(u => u.email === email);
+        const duplicadoPhone = usuarios.find(u => u.phone === phone);
+
+        if (duplicadoUsername) {
+            $("#username").addClass("error");
+            hayDuplicado = true;
+        }
+
+        if (duplicadoEmail) {
+            if (isAdult) {
+                $("#email").addClass("error");
+            } else {
+                $("#emailPadres").addClass("error");
+            }
+            hayDuplicado = true;
+        }
+
+        if (duplicadoPhone) {
+            if (isAdult) {
+                $("#phone").addClass("error");
+            } else {
+                $("#phonePadres").addClass("error");
+            }
+            hayDuplicado = true;
+        }
+
+        // Si esta duplicado
+        if (hayDuplicado) {
+            alert("Ya existe un usuario con esos datos. Corrige los campos marcados.");
+            return;
+        }
 
         // Creamos el nuevo usuario
         const nuevoUsuario = {
@@ -108,38 +147,16 @@ $(document).ready(function() {
             upgrades: []
         };
 
-        $.ajax({
-            url: 'backend/api.php',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(nuevoUsuario),
-            success: function(respuesta) {
-                if (respuesta.error) {
-                    // Si el backend detecta duplicados, mostramos los campos en error
-                    if (respuesta.errorFields) {
-                        respuesta.errorFields.forEach(f => {
-                            $(`#${f}`).addClass("error");
-                        });
-                    }
-                    alert(respuesta.mensaje); // "Ya existe un usuario con esos datos"
-                    return;
-                }
+        usuarios.push(nuevoUsuario);
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-                // Limpiar el formulario después del registro
-                this.reset();
-                $("input").removeClass("error");
-                alert("Usuario registrado correctamente ✅");
+        // Limpiar el formulario después del registro
+        this.reset();
+        $("input").removeClass("error");
+        alert("Usuario registrado correctamente ✅");
 
-                // Volvemos al login
-                window.location.href = 'login.html';
-                alert(respuesta.mensaje); // "Usuario añadido correctamente"
-                $('#register-form')[0].reset(); // Limpiamos formulario
-                window.location.href = 'login.html';
-            },
-            error: function() {
-                alert("Error al registrar el usuario ❌");
-            }
-        });
+        // Volvemos al login
+        window.location.href = 'login.html';
     });
 
 
@@ -272,6 +289,82 @@ $(document).ready(function() {
     $('#logout-btn').on('click', function() {
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
+    });
+
+    // --- LÓGICA DEL REPORTE PDF ---
+
+    // 1. Inicializar el gráfico (vacío al principio)
+    const ctx = document.getElementById('grafico-stats').getContext('2d');
+    const statsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Cookies por Click (CPC)', 'Cookies por Segundo (CPS)'],
+            datasets: [{
+                label: 'Rendimiento Actual',
+                data: [0, 0],
+                backgroundColor: ['#f1c40f', '#e67e22'], // Colores amarillos/naranja
+                borderColor: ['#d4ac0d', '#ca6f1e'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true } },
+            animation: false // Desactivamos animación para que la captura sea instantánea
+        }
+    });
+
+    // 2. Evento del botón para generar el PDF
+    $('#generar-pdf').on('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Obtenemos los datos directamente del objeto 'game' que ya creaste
+        const currentCookies = Math.floor(game.cookies);
+        const currentCPS = game.cps;
+        const currentCPC = game.cpc;
+        const userName = usuarioEncontrado.username;
+
+        // Actualizamos el gráfico con los datos reales del momento
+        statsChart.data.datasets[0].data = [currentCPC, currentCPS];
+        statsChart.update();
+
+        // -- Construcción del PDF --
+        doc.setFontSize(22);
+        doc.setTextColor(100, 50, 0); // Marrón galleta
+        doc.text("Cookie Clicker - Informe de Progreso", 14, 20);
+
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Jugador: ${userName}`, 14, 30);
+        doc.text(`Fecha del reporte: ${new Date().toLocaleString()}`, 14, 38);
+
+        // Tabla de Datos
+        doc.autoTable({
+            startY: 45,
+            head: [
+                ['Estadística', 'Valor']
+            ],
+            body: [
+                ['Cookies Totales', currentCookies.toLocaleString()],
+                ['Cookies por Click (CPC)', currentCPC.toLocaleString()],
+                ['Cookies por Segundo (CPS)', currentCPS.toLocaleString()],
+                ['Tipo de Galleta', usuarioEncontrado.cookieType]
+            ],
+            theme: 'striped',
+            headStyles: { fillColor: [139, 69, 19] }
+        });
+
+        // Capturar el gráfico y añadirlo
+        const chartImg = document.getElementById('grafico-stats').toDataURL('image/png');
+        doc.text("Comparativa de Producción:", 14, doc.lastAutoTable.finalY + 15);
+        doc.addImage(chartImg, 'PNG', 14, doc.lastAutoTable.finalY + 20, 120, 60);
+
+        // Pie de página
+        doc.setFontSize(10);
+        doc.text("Desarrollado por Eri © 2025", 14, doc.internal.pageSize.height - 10);
+
+        // Descargar
+        doc.save(`Progreso_${userName}.pdf`);
     });
 
 });
