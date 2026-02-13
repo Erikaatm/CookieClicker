@@ -293,23 +293,54 @@ $(document).ready(function() {
 
     // --- LÓGICA DEL REPORTE PDF ---
 
-    // 1. Inicializar el gráfico (vacío al principio)
+    // 1. Inicializar el gráfico 
     const ctx = document.getElementById('grafico-stats').getContext('2d');
+
+    const chartCanvas = document.getElementById('grafico-stats');
+    chartCanvas.width = 1500;
+    chartCanvas.height = 600;
+
     const statsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Cookies por Click (CPC)', 'Cookies por Segundo (CPS)'],
+            labels: ['Producción'],
             datasets: [{
-                label: 'Rendimiento Actual',
-                data: [0, 0],
-                backgroundColor: ['#f1c40f', '#e67e22'], // Colores amarillos/naranja
-                borderColor: ['#d4ac0d', '#ca6f1e'],
-                borderWidth: 1
-            }]
+                    label: 'Cookies por Click (CPC)',
+                    data: [0],
+                    backgroundColor: '#ffcc00',
+                    borderColor: '#ffaa00',
+                    borderWidth: 5
+                },
+                {
+                    label: 'Cookies por Segundo (CPS)',
+                    data: [0],
+                    backgroundColor: '#624a3b',
+                    borderColor: '#3d2e25',
+                    borderWidth: 5
+                }
+            ]
         },
         options: {
-            scales: { y: { beginAtZero: true } },
-            animation: false // Desactivamos animación para que la captura sea instantánea
+            responsive: false,
+            animation: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } // CAMBIO: Texto en negro para el PDF
+                },
+                x: {
+                    ticks: { color: '#000000', font: { size: 16, weight: 'bold' } } // CAMBIO: Texto en negro
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#000000', // CAMBIO: Labels de la leyenda en negro
+                        font: { size: 18, weight: 'bold' }
+                    }
+                }
+            }
         }
     });
 
@@ -318,53 +349,96 @@ $(document).ready(function() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Obtenemos los datos directamente del objeto 'game' que ya creaste
+        // Datos del juego
         const currentCookies = Math.floor(game.cookies);
         const currentCPS = game.cps;
         const currentCPC = game.cpc;
         const userName = usuarioEncontrado.username;
+        const cookieImgPath = getCookieImage(usuarioEncontrado.cookieType);
 
-        // Actualizamos el gráfico con los datos reales del momento
-        statsChart.data.datasets[0].data = [currentCPC, currentCPS];
+        // 1. Actualizar gráfico y forzar alta resolución
+        statsChart.data.datasets[0].data = [currentCPC];
+        statsChart.data.datasets[1].data = [currentCPS];
         statsChart.update();
 
-        // -- Construcción del PDF --
-        doc.setFontSize(22);
-        doc.setTextColor(100, 50, 0); // Marrón galleta
-        doc.text("Cookie Clicker - Informe de Progreso", 14, 20);
+        // 2. Crear objeto de imagen para la galleta
+        const imgGalleta = new Image();
+        imgGalleta.src = cookieImgPath;
 
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Jugador: ${userName}`, 14, 30);
-        doc.text(`Fecha del reporte: ${new Date().toLocaleString()}`, 14, 38);
+        // Esperamos a que la imagen cargue para generar el PDF
+        imgGalleta.onload = function() {
 
-        // Tabla de Datos
-        doc.autoTable({
-            startY: 45,
-            head: [
-                ['Estadística', 'Valor']
-            ],
-            body: [
-                ['Cookies Totales', currentCookies.toLocaleString()],
-                ['Cookies por Click (CPC)', currentCPC.toLocaleString()],
-                ['Cookies por Segundo (CPS)', currentCPS.toLocaleString()],
-                ['Tipo de Galleta', usuarioEncontrado.cookieType]
-            ],
-            theme: 'striped',
-            headStyles: { fillColor: [139, 69, 19] }
-        });
+            // --- CABECERA ESTILO WEB ---
+            doc.setFillColor(20, 20, 60);
+            doc.rect(0, 0, 210, 40, 'F');
 
-        // Capturar el gráfico y añadirlo
-        const chartImg = document.getElementById('grafico-stats').toDataURL('image/png');
-        doc.text("Comparativa de Producción:", 14, doc.lastAutoTable.finalY + 15);
-        doc.addImage(chartImg, 'PNG', 14, doc.lastAutoTable.finalY + 20, 120, 60);
+            // Título 
+            doc.setFontSize(22);
+            doc.setTextColor(255, 204, 0);
+            doc.text("COOKIE CLICKER REPORT", 14, 25);
 
-        // Pie de página
-        doc.setFontSize(10);
-        doc.text("Desarrollado por Eri © 2025", 14, doc.internal.pageSize.height - 10);
+            // Añadir la imagen de la galleta seleccionada al lado del título
+            doc.addImage(imgGalleta, 'PNG', 170, 7, 25, 25);
 
-        // Descargar
-        doc.save(`Progreso_${userName}.pdf`);
+            // Info básica
+            doc.setFontSize(10);
+            doc.setTextColor(255, 255, 255);
+            doc.text(`Jugador: ${userName.toUpperCase()}`, 14, 33);
+            doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 130, 33);
+
+            // --- TABLA DE DATOS ---
+            doc.autoTable({
+                startY: 45,
+                head: [
+                    ['Estadística', 'Valor']
+                ],
+                body: [
+                    ['Cookies Totales', currentCookies.toLocaleString()],
+                    ['Cookies por Click (CPC)', currentCPC.toLocaleString()],
+                    ['Cookies por Segundo (CPS)', currentCPS.toLocaleString()],
+                    ['Tipo de Galleta', usuarioEncontrado.cookieType]
+                ],
+                theme: 'striped',
+                headStyles: {
+                    fillColor: [255, 204, 0],
+                    textColor: [34, 34, 34],
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    lineColor: [255, 255, 255],
+                    lineWidth: 0.5
+                },
+                columnStyles: {
+                    0: { fontStyle: 'bold' }
+                }
+            });
+
+            // Extraemos la imagen del canvas con máxima calidad
+            const chartCanvas = document.getElementById('grafico-stats');
+            const chartImg = chartCanvas.toDataURL('image/png', 1.0);
+
+            doc.setTextColor(20, 20, 60);
+            doc.setFontSize(14);
+            doc.text("Análisis de Producción", 14, doc.lastAutoTable.finalY + 15);
+
+            // Dibujamos el gráfico
+            doc.addImage(chartImg, 'PNG', 14, doc.lastAutoTable.finalY + 20, 140, 70);
+
+            // Pie de página
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text("Desarrollado por Eri © 2025", 14, doc.internal.pageSize.height - 10);
+
+            // Descargar
+            doc.save(`Progreso_${userName}.pdf`);
+        };
+
+        // Manejo de error si la imagen no carga
+        imgGalleta.onerror = function() {
+            console.error("No se pudo cargar la imagen de la galleta para el PDF.");
+            alert("Error al cargar la imagen de la galleta. Generando PDF sin imagen.");
+            // Generar PDF simplificado o llamar a una función de respaldo aquí
+        };
     });
 
 });
